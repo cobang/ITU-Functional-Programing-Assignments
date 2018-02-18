@@ -25,8 +25,7 @@ dayOfWeek y m d = (d + monthCoefficient m + yearCoefficient y) `mod` 7
                         j = floor (fromIntegral y'' / 100.0)
 
                         yearCo21 :: Integer -> Integer
-                        yearCo21 j = floor (fromIntegral j / 4.0)
+                        yearCo21 j' = floor (fromIntegral j' / 4.0)
                 
                         yearCo22 :: Integer -> Integer
-                        yearCo22 j = j * 5
-                        
+                        yearCo22 j' = j' * 5
