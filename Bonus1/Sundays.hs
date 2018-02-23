@@ -1,31 +1,26 @@
 module Sundays where
 
 dayOfWeek :: Integer -> Integer -> Integer -> Integer
-dayOfWeek y m d = (d + monthCoefficient m + yearCoefficient y) `mod` 7
+dayOfWeek y m d = mod (d + m' + k + k' + j' + 5 * j ) 7
     where
-        monthCoefficient :: Integer -> Integer
-        monthCoefficient m'
-            | m' <= 2   = formula (m' + 12)
-            | otherwise = formula m'
-                where
-                    formula :: Integer -> Integer
-                    formula m'' = floor (fromIntegral (13 * (m'' + 1)) / 5.0)
+        k = mod y 100
+        j = div y 100
+        k' = div k 4
+        j' = div j 4
 
-        yearCoefficient :: Integer -> Integer
-        yearCoefficient y' = yearCo1 y' + yearCo2 y'
+        m' :: Integer
+        m' = case m <= 2 of
+            True -> div (13 * (m + 13)) 5
+            otherwise -> div (13 * (m + 1)) 5
+
+sundays1 :: Integer -> Integer -> Integer
+sundays1 start end = sundays' ? ?
+    where
+        sundays' :: Integer -> Integer -> Integer
+        sundays' y m
+            | y > end = ?
+            | otherwise = if dayOfWeek y m 1 == then rest + 1 else rest
             where
-                yearCo1 :: Integer -> Integer
-                yearCo1 y'' = floor (fromIntegral k / 4.0) + k
-                    where
-                        k = mod y'' 100
-
-                yearCo2 :: Integer -> Integer
-                yearCo2 y'' = yearCo21 j + yearCo22 j
-                    where
-                        j = floor (fromIntegral y'' / 100.0)
-
-                        yearCo21 :: Integer -> Integer
-                        yearCo21 j' = floor (fromIntegral j' / 4.0)
-                
-                        yearCo22 :: Integer -> Integer
-                        yearCo22 j' = j' * 5
+            	nextY = ?
+            	nextM = ?
+            	rest = ?
