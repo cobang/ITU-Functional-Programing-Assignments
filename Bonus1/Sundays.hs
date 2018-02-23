@@ -9,9 +9,7 @@ dayOfWeek y m d = mod (d + m' + k + k' + j' + 5 * j ) 7
         j' = div j 4
 
         m' :: Integer
-        m' = case m <= 2 of
-            True      -> div (13 * (m + 13)) 5
-            otherwise -> div (13 * (m + 1)) 5
+        m' = if m <= 2 then div (13 * (m + 13)) 5 else div (13 * (m + 1)) 5
 
 -- This function recursively checks first day of each month of each year in the given interval
 -- and counts sundays.
@@ -39,6 +37,4 @@ sundays1Rest start end = sundays' start 1
             where
                 nextY = y + 1
                 nextM = m + 1
-                rest = case m == 12 of
-                    True      -> sundays' nextY 1
-                    otherwise -> sundays' y nextM
+                rest = if m == 12 then sundays' nextY 1 else sundays' y nextM
