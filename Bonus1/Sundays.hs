@@ -73,3 +73,13 @@ sundays2 start end = sundays' 0 start 1 2
                 days  = mod (weekday + daysInMonth y m) 7
                 nextY = y + 1
                 nextM = m + 1
+
+-- Are all days equally possible?
+isDaysEqual :: Bool
+isDaysEqual = mod (days' 0 1) 7 == 0
+    where
+        days' :: Integer -> Integer -> Integer
+        days' acc y = if y > 400 then acc else days' (mod (acc + daysInYear y) 7) (y + 1)
+            where
+                daysInYear :: Integer -> Integer
+                daysInYear y' = if leap y then 366 else 365
