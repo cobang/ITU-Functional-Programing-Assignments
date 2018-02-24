@@ -51,3 +51,25 @@ sundays1Rest start end = sundays' start 1
                 nextY = y + 1
                 nextM = m + 1
                 rest = if m == 12 then sundays' nextY 1 else sundays' y nextM
+
+leap :: Integer -> Bool
+leap y = (mod y 4 == 0) && (mod y 100 /= 0) || (mod y 400 == 0)
+
+daysInMonth :: Integer -> Integer -> Integer
+daysInMonth y m
+    | m==2                                   = if leap y then 29 else 28
+    | (m==4) || (m==6) || (m==9) || (m== 11) = 30
+    | otherwise                              = 31
+
+sundays2 :: Integer -> Integer -> Integer
+sundays2 start end = sundays' 0 start 1 2
+    where
+        sundays' :: Integer -> Integer -> Integer -> Integer -> Integer
+        sundays' acc y m weekday
+            | y > end   = acc
+            | m == 12   = if days == 0 then sundays' (acc + 1) nextY 1 days else sundays' acc nextY 1 days
+            | otherwise = if days == 0 then sundays' (acc + 1) y nextM days else sundays' acc y nextM days
+            where
+                days  = mod (weekday + daysInMonth y m) 7
+                nextY = y + 1
+                nextM = m + 1
