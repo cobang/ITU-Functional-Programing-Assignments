@@ -1,7 +1,7 @@
 import Test.QuickCheck
 import Sundays
 
--- Result of two function should be equal
+-- Results of all functions should be equal.
 prop_sundays :: Integer -> Integer -> Bool
 prop_sundays start end = (a == b) && (a == c) && (a == d)
     where
