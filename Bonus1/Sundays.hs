@@ -3,12 +3,11 @@ module Sundays where
 dayOfWeek :: Integer -> Integer -> Integer -> Integer
 dayOfWeek y m d = mod (d + m' + k + k' + j' + 5 * j ) 7
     where
-        k = mod y 100
-        j = div y 100
+        y' = if m <= 2 then y - 1 else y
+        k = mod y' 100
+        j = div y' 100
         k' = div k 4
         j' = div j 4
-
-        m' :: Integer
         m' = if m <= 2 then div (13 * (m + 13)) 5 else div (13 * (m + 1)) 5
 
 -- sundays1 functions recursively checks first day of each month of each year in the given interval
@@ -20,11 +19,12 @@ sundays1Tail start end = sundays' 0 start 1
         sundays' :: Integer -> Integer -> Integer -> Integer
         sundays' acc y m
             | y > end   = acc
-            | m == 12   = if dayOfWeek y m 1 == 1 then sundays' (acc + 1) nextY 1 else sundays' acc nextY 1
-            | otherwise = if dayOfWeek y m 1 == 1 then sundays' (acc + 1) y nextM else sundays' acc y nextM
+            | m == 12   = sundays' acc' nextY 1
+            | otherwise = sundays' acc' y nextM
             where
                 nextY = y + 1
                 nextM = m + 1
+                acc'  = if dayOfWeek y m 1 == 1 then acc + 1 else acc
 
 -- Implemetation without rest expression.
 sundays1 :: Integer -> Integer -> Integer
@@ -33,11 +33,12 @@ sundays1 start end = sundays' start 1
         sundays' :: Integer -> Integer -> Integer
         sundays' y m
             | y > end   = 0
-            | m == 12   = if dayOfWeek y m 1 == 1 then sundays' nextY 1 + 1 else sundays' nextY 1
-            | otherwise = if dayOfWeek y m 1 == 1 then sundays' y nextM + 1 else sundays' y nextM
+            | m == 12   = sundays' nextY 1 + n
+            | otherwise = sundays' y nextM + n
             where
                 nextY = y + 1
                 nextM = m + 1
+                n     = if dayOfWeek y m 1 == 1 then 1 else 0
 
 -- Implemetation with rest expression.
 sundays1Rest :: Integer -> Integer -> Integer
@@ -62,17 +63,20 @@ daysInMonth y m
     | otherwise                              = 31
 
 sundays2 :: Integer -> Integer -> Integer
-sundays2 start end = sundays' 0 start 1 2
+sundays2 start end = sundays' 0 start 1 dow
     where
+        dow = (dayOfWeek start 1 1 - 1) `mod` 7
+
         sundays' :: Integer -> Integer -> Integer -> Integer -> Integer
         sundays' acc y m weekday
             | y > end   = acc
-            | m == 12   = if days == 0 then sundays' (acc + 1) nextY 1 days else sundays' acc nextY 1 days
-            | otherwise = if days == 0 then sundays' (acc + 1) y nextM days else sundays' acc y nextM days
+            | m == 12   = sundays' acc' nextY 1 days
+            | otherwise = sundays' acc' y nextM days
             where
                 days  = mod (weekday + daysInMonth y m) 7
                 nextY = y + 1
                 nextM = m + 1
+                acc'  = if mod weekday 7 == 0 then acc + 1 else acc
 
 -- Are all days equally possible?
 isDaysEqual :: Bool
