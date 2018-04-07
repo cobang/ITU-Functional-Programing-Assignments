@@ -50,8 +50,11 @@ score cs g = if allSameColor cs then div preliminary 2 else preliminary where
 -- TODO: Think, Should I add new card to start of the hs' or end'?
 runGame :: [Card] -> [Move] -> Int -> Int
 runGame cs ms g = step initial where
+    initial :: State
+    initial = ([], cs, ms, g)
+
     step :: State -> Int
-    step (hs', _, [], g')                 = score hs' g'
+    step (hs', _, [], g')        = score hs' g'
     step (hs', cs', ms1:ms', g') = case ms1 of
         Discard c -> step ((removeCard hs' c), cs', ms', g')
         Draw      -> if null cs' 
@@ -59,9 +62,6 @@ runGame cs ms g = step initial where
             else if sumCards (head cs': hs') > g'
                 then score hs' g' 
                 else step ((head cs': hs'), tail cs', ms', g')
-    
-    initial :: State
-    initial = ([], cs, ms, g)
 
 convertSuit :: Char -> Suit
 convertSuit c
@@ -112,3 +112,19 @@ readMoves = do line <- getLine
                             validateAndConvertMove [c1]       = if (c1 == 'd' || c1 == 'D') then Draw else err
                             validateAndConvertMove [c1,c2,c3] = if (c1 == 'r' || c1 == 'R') then Discard (convertCard c2 c3) else err
                             validateAndConvertMove _          = err
+
+main = do putStrLn "Enter cards:"
+          cards <- readCards
+          -- putStrLn (show cards)
+
+          putStrLn "Enter moves:"
+          moves <- readMoves
+          -- putStrLn (show moves)
+
+          putStrLn "Enter goal:"
+          line <- getLine
+
+          let goal = read line :: Int
+
+          let score = runGame cards moves goal
+          putStrLn ("Score: " ++ show score)
