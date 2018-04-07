@@ -88,8 +88,8 @@ readCards :: IO [Card]
 readCards = do line <- getLine
                if line == "."
                   then return []
-                  else do new_line <- readCards
-                          return ([validateAndConvertCard line] ++ new_line) where
+                  else do rest <- readCards
+                          return ([validateAndConvertCard line] ++ rest) where
                             validateAndConvertCard :: String -> Card
                             validateAndConvertCard [c1,c2] = convertCard c1 c2
                             validateAndConvertCard _       = error "invalid string for card"
@@ -98,3 +98,17 @@ convertMove :: Char -> Char -> Char -> Move
 convertMove m s r
     | m == 'd' || m == 'D' = Draw
     | m == 'r' || m == 'R' = Discard (convertCard s r)
+
+readMoves :: IO [Move]
+readMoves = do line <- getLine
+               if line == "."
+                  then return []
+                  else do rest <- readMoves
+                          return ([validateAndConvertMove line] ++ rest) where
+                            err :: a
+                            err = error "invalid string for move"
+
+                            validateAndConvertMove :: String -> Move
+                            validateAndConvertMove [c1]       = if (c1 == 'd' || c1 == 'D') then Draw else err
+                            validateAndConvertMove [c1,c2,c3] = if (c1 == 'r' || c1 == 'R') then Discard (convertCard c2 c3) else err
+                            validateAndConvertMove _          = err
