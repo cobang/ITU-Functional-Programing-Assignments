@@ -5,6 +5,7 @@ data Suit  = Clubs | Diamonds | Hearts | Spades deriving (Eq, Show)
 data Rank  = Num Int | Jack | Queen | King | Ace deriving (Eq, Show)
 data Card  = Card { suit :: Suit, rank :: Rank } deriving (Eq, Show)
 data Move  = Draw | Discard Card deriving (Show)
+type State = ([Card], [Card], [Move], Int)
 
 cardColor :: Card -> Color
 cardColor c = case c of
@@ -41,3 +42,23 @@ score cs g = if allSameColor cs then div preliminary 2 else preliminary where
 
     preliminary :: Int
     preliminary = if sum > g then 3*(sum-g) else g-sum
+
+-- Card List cs
+-- Move List ms
+-- Goal g
+-- TODO: Think, Should I add new card to start of the hs' or end'?
+runGame :: [Card] -> [Move] -> Int -> Int
+runGame cs ms g = step initial where
+    step :: State -> Int
+    step (hs', _, [], g')                 = score hs' g'
+    step (hs', cs', ms1:ms', g') = case ms1 of
+        Discard c -> step ((removeCard hs' c), cs', ms', g')
+        Draw      -> if null cs' 
+            then score hs' g' 
+            else if sumCards (head cs': hs') > g'
+                then score hs' g' 
+                else step ((head cs': hs'), tail cs', ms', g')
+    
+    initial :: State
+    initial = ([], cs, ms, g)
+
