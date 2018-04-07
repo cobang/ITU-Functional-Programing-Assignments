@@ -23,13 +23,21 @@ removeCard [] _       = error "c is not in the list"
 removeCard (c':cs') c = if c' == c then cs' else c' : removeCard cs' c
 
 allSameColor :: [Card] -> Bool
-allSameColor []               = error "there is no card in the list"
-allSameColor [c]              = True
-allSameColor [c1,c2]          = (cardColor c1) == (cardColor c2)
+allSameColor []             = error "there is no card in the list"
+allSameColor [c]            = True
+allSameColor [c1,c2]        = (cardColor c1) == (cardColor c2)
 allSameColor cs@(c1':c2':_) = if (cardColor c1') == (cardColor c2') then allSameColor (tail cs) else False
 
 sumCards :: [Card] -> Int
 sumCards cs = sumCards' 0 cs where
     sumCards' :: Int -> [Card] -> Int
-    sumCards' acc [] = acc
+    sumCards' acc []       = acc
     sumCards' acc (c1:cs') = sumCards' (acc + cardValue c1) cs'
+
+score :: [Card] -> Int -> Int
+score cs g = if allSameColor cs then div preliminary 2 else preliminary where
+    sum :: Int
+    sum = sumCards cs
+
+    preliminary :: Int
+    preliminary = if sum > g then 3*(sum-g) else g-sum
