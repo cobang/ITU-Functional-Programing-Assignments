@@ -93,3 +93,8 @@ readCards = do line <- getLine
                             validateAndConvertCard :: String -> Card
                             validateAndConvertCard [c1,c2] = convertCard c1 c2
                             validateAndConvertCard _       = error "invalid string for card"
+
+convertMove :: Char -> Char -> Char -> Move
+convertMove m s r
+    | m == 'd' || m == 'D' = Draw
+    | m == 'r' || m == 'R' = Discard (convertCard s r)
