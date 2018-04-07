@@ -83,3 +83,10 @@ convertRank c
 
 convertCard :: Char -> Char -> Card
 convertCard s r = Card (convertSuit s) (convertRank r)
+
+readCards :: IO [Card]
+readCards = do line <- getLine
+               if line == "."
+                  then return []
+                  else do new_line <- readCards
+                          return ([convertCard (head line) (head (tail line))] ++ new_line)
