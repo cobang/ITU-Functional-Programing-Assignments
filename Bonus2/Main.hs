@@ -1,4 +1,4 @@
-module Solitarie where
+module Main where
 import Data.Char
 
 data Color = Red | Black deriving (Eq, Show)
@@ -21,11 +21,11 @@ cardValue c = case c of
     _              -> 10
 
 removeCard :: [Card] -> Card -> [Card]
-removeCard [] _       = error "c is not in the list"
+removeCard [] _       = error "card is not in list"
 removeCard (c':cs') c = if c' == c then cs' else c' : removeCard cs' c
 
 allSameColor :: [Card] -> Bool
-allSameColor []             = error "there is no card in the list"
+allSameColor []             = error "there is no card in list"
 allSameColor [c]            = True
 allSameColor [c1,c2]        = (cardColor c1) == (cardColor c2)
 allSameColor cs@(c1':c2':_) = if (cardColor c1') == (cardColor c2') then allSameColor (tail cs) else False
@@ -47,7 +47,6 @@ score cs g = if allSameColor cs then div preliminary 2 else preliminary where
 -- Card List cs
 -- Move List ms
 -- Goal g
--- TODO: Think, Should I add new card to start of the hs' or end'?
 runGame :: [Card] -> [Move] -> Int -> Int
 runGame cs ms g = step initial where
     initial :: State
@@ -59,9 +58,11 @@ runGame cs ms g = step initial where
         Discard c -> step ((removeCard hs' c), cs', ms', g')
         Draw      -> if null cs' 
             then score hs' g' 
-            else if sumCards (head cs': hs') > g'
-                then score hs' g' 
-                else step ((head cs': hs'), tail cs', ms', g')
+            else if sumCards hs'' > g'
+                then score hs'' g' 
+                else step (hs'', tail cs', ms', g') where
+                  hs'' :: [Card]
+                  hs'' = head cs': hs'
 
 convertSuit :: Char -> Suit
 convertSuit c
