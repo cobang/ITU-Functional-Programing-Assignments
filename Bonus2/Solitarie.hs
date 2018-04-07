@@ -89,4 +89,7 @@ readCards = do line <- getLine
                if line == "."
                   then return []
                   else do new_line <- readCards
-                          return ([convertCard (head line) (head (tail line))] ++ new_line)
+                          return ([validateAndConvertCard line] ++ new_line) where
+                            validateAndConvertCard :: String -> Card
+                            validateAndConvertCard [c1,c2] = convertCard c1 c2
+                            validateAndConvertCard _       = error "invalid string for card"
