@@ -27,3 +27,9 @@ allSameColor []               = error "there is no card in the list"
 allSameColor [c]              = True
 allSameColor [c1,c2]          = (cardColor c1) == (cardColor c2)
 allSameColor cs@(c1':c2':_) = if (cardColor c1') == (cardColor c2') then allSameColor (tail cs) else False
+
+sumCards :: [Card] -> Int
+sumCards cs = sumCards' 0 cs where
+    sumCards' :: Int -> [Card] -> Int
+    sumCards' acc [] = acc
+    sumCards' acc (c1:cs') = sumCards' (acc + cardValue c1) cs'
