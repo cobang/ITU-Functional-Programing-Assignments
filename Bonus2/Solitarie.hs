@@ -1,4 +1,5 @@
 module Solitarie where
+import Data.Char
 
 data Color = Red | Black deriving (Eq, Show)
 data Suit  = Clubs | Diamonds | Hearts | Spades deriving (Eq, Show)
@@ -62,3 +63,23 @@ runGame cs ms g = step initial where
     initial :: State
     initial = ([], cs, ms, g)
 
+convertSuit :: Char -> Suit
+convertSuit c
+    | c == 'c' || c == 'C' = Clubs
+    | c == 'd' || c == 'D' = Diamonds
+    | c == 'h' || c == 'H' = Hearts
+    | c == 's' || c == 'S' = Spades
+    | otherwise            = error "invalid character for suits"
+
+convertRank :: Char -> Rank
+convertRank c
+    | c == 'j' || c == 'J' = Jack
+    | c == 'q' || c == 'Q' = Queen
+    | c == 'k' || c == 'K' = King
+    | c == 't' || c == 'T' = Num 10
+    | c == '1'             = Ace
+    | isDigit c && digitToInt c > 1 && digitToInt c < 10 = Num (digitToInt c)
+    | otherwise            = error "invalid character for ranks"
+
+convertCard :: Char -> Char -> Card
+convertCard s r = Card (convertSuit s) (convertRank r)
