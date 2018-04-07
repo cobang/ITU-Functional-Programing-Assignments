@@ -10,4 +10,10 @@ cardColor :: Card -> Color
 cardColor c = case c of
     Card Spades _ -> Black
     Card Clubs  _ -> Black
-    Card _      _ -> Red 
+    _             -> Red
+
+cardValue :: Card -> Int
+cardValue c = case c of
+    Card _ (Num n) -> n
+    Card _ Ace     -> 11
+    _              -> 10
