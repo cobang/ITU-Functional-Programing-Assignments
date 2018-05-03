@@ -25,3 +25,8 @@ wordAnagrams w m = handle (lookup (wordCharCounts w) m) where
     handle :: Maybe [Word] -> [Word]
     handle Nothing  = []
     handle (Just x) = x
+
+charCountsSubsets :: CharCounts -> [CharCounts]
+charCountsSubsets cc = map wordCharCounts subWords where
+    word = concat (map (\(c, n) -> replicate n c) (toList cc))
+    subWords = nub $ inits word ++ tails word
