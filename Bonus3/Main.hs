@@ -1,8 +1,10 @@
-module Anagrams where
-import Prelude hiding (Word, lookup)
+module Main where
+import Prelude hiding (Word, lookup, null)
 import Data.Char
-import Data.List hiding (lookup)
+import Data.List hiding (lookup, null)
+import Data.List.Split
 import Data.Map hiding (map, filter)
+import System.Environment
 
 type Word = [Char]
 type Sentence = [Word]
@@ -28,11 +30,26 @@ wordAnagrams w m = handle (lookup (wordCharCounts w) m) where
 
 charCountsSubsets :: CharCounts -> [CharCounts]
 charCountsSubsets cc = map wordCharCounts subWords where
-    word = concat (map (\(c, n) -> replicate n c) (toList cc))
+    word     = concat (map (\(c, n) -> replicate n c) (toList cc))
     subWords = nub $ inits word ++ tails word
 
 subtractCounts :: CharCounts -> CharCounts -> CharCounts
 subtractCounts cc1 cc2 = fromList $ filter (\(a, b) -> b > 0) $ map (\key -> (key, sub (lookup key cc1) (lookup key cc2))) $ keys cc1 where
     sub :: Maybe Int -> Maybe Int -> Int 
     sub (Just a) (Just b) = a - b
-    sub (Just a) Nothing = a
+    sub (Just a) Nothing  = a
+
+-- TODO: sentenceAnagrams
+
+main = do
+    args <- getArgs
+    let sentence = splitOn " " (args !! 0)
+    
+    content <- readFile ("words.txt")
+    let linesOfFiles = lines content
+    let dict = dictWordsByCharCounts (dictCharCounts linesOfFiles)
+
+    let anagrams = sentenceAnagrams sentence dict
+
+    putStrLn (show anagrams)
+
