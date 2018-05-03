@@ -30,3 +30,9 @@ charCountsSubsets :: CharCounts -> [CharCounts]
 charCountsSubsets cc = map wordCharCounts subWords where
     word = concat (map (\(c, n) -> replicate n c) (toList cc))
     subWords = nub $ inits word ++ tails word
+
+subtractCounts :: CharCounts -> CharCounts -> CharCounts
+subtractCounts cc1 cc2 = fromList $ filter (\(a, b) -> b > 0) $ map (\key -> (key, sub (lookup key cc1) (lookup key cc2))) $ keys cc1 where
+    sub :: Maybe Int -> Maybe Int -> Int 
+    sub (Just a) (Just b) = a - b
+    sub (Just a) Nothing = a
