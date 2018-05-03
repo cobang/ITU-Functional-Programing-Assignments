@@ -9,7 +9,7 @@ type Sentence = [Word]
 type CharCounts = Map Char Int
 
 wordCharCounts :: Word -> Map Char Int
-wordCharCounts w = fromListWith (+) $ map (\x -> (x, 1)) w
+wordCharCounts w = fromListWith (+) $ map (\x -> (toLower x, 1)) w
 
 sentenceCharCounts :: Sentence -> CharCounts
 sentenceCharCounts = wordCharCounts.concat
