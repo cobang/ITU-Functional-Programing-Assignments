@@ -1,7 +1,7 @@
 module Anagrams where
-import Prelude hiding (Word)
+import Prelude hiding (Word, lookup)
 import Data.Char
-import Data.List
+import Data.List hiding (lookup)
 import Data.Map hiding (map, filter)
 
 type Word = [Char]
@@ -19,3 +19,9 @@ dictCharCounts d = zip d $ map wordCharCounts d
 
 dictWordsByCharCounts :: [(Word, CharCounts)] -> Map CharCounts [Word]
 dictWordsByCharCounts x = fromListWith (++) $ map (\(t0, t1) -> (t1, [t0])) x
+
+wordAnagrams :: Word -> Map CharCounts [Word] -> [Word]
+wordAnagrams w m = handle (lookup (wordCharCounts w) m) where
+    handle :: Maybe [Word] -> [Word]
+    handle Nothing  = []
+    handle (Just x) = x
