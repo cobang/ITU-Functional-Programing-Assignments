@@ -4,16 +4,12 @@ import Data.Char
 import Data.List
 import Data.Map hiding (map, filter)
 
-
 type Word = [Char]
 type Sentence = [Word]
 type CharCounts = Map Char Int
 
 wordCharCounts :: Word -> Map Char Int
-wordCharCounts w = fromList l where
-    l = zip cs $ map (\c -> length $ filter (== c) lw) cs where
-        lw = map toLower w
-        cs = nub lw
+wordCharCounts w = fromListWith (+) (map (\x -> (x, 1)) w)
 
 sentenceCharCounts :: Sentence -> CharCounts
 sentenceCharCounts = wordCharCounts.concat
