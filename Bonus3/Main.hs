@@ -1,16 +1,16 @@
 module Main where
-import Prelude hiding (Word, lookup, null)
+import Prelude hiding (Word, lookup)
 import Data.Char
 import Data.List hiding (lookup, null)
 import Data.List.Split
-import Data.Map hiding (map, filter)
+import Data.Map hiding (map, filter, null)
 import System.Environment
 
 type Word = [Char]
 type Sentence = [Word]
 type CharCounts = Map Char Int
 
-wordCharCounts :: Word -> Map Char Int
+wordCharCounts :: Word -> CharCounts
 wordCharCounts w = fromListWith (+) $ map (\x -> (toLower x, 1)) w
 
 sentenceCharCounts :: Sentence -> CharCounts
@@ -21,6 +21,9 @@ dictCharCounts d = zip d $ map wordCharCounts d
 
 dictWordsByCharCounts :: [(Word, CharCounts)] -> Map CharCounts [Word]
 dictWordsByCharCounts x = fromListWith (++) $ map (\(t0, t1) -> (t1, [t0])) x
+
+toWord :: CharCounts -> Word
+toWord cc = concat (map (\(c, n) -> replicate n c) (toList cc))
 
 wordAnagrams :: Word -> Map CharCounts [Word] -> [Word]
 wordAnagrams w m = handle (lookup (wordCharCounts w) m) where
@@ -48,7 +51,13 @@ subtractCounts cc1 cc2 = fromList $ filter (\(a, b) -> b > 0) $ map (\key -> (ke
     sub (Just a) (Just b) = a - b
     sub (Just a) Nothing  = a
 
--- TODO: sentenceAnagrams
+sentenceAnagrams :: Sentence -> Map CharCounts [Word] -> [Sentence]
+sentenceAnagrams s dict = iter (sentenceCharCounts s) where
+    iter cc = case size cc of
+        0 -> [[]]
+        otherwise -> [word: sentence | sub  <- (charCountsSubsets cc),
+                                       word <- wordAnagrams (toWord sub) dict,
+                                       sentence <- iter (subtractCounts cc sub), not (null sub)]
 
 main = do
     args <- getArgs
