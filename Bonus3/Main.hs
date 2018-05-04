@@ -22,6 +22,8 @@ dictCharCounts d = zip d $ map wordCharCounts d
 dictWordsByCharCounts :: [(Word, CharCounts)] -> Map CharCounts [Word]
 dictWordsByCharCounts x = fromListWith (++) $ map (\(t0, t1) -> (t1, [t0])) x
 
+-- toWord converts the given CharCounts to a String
+-- for example: fromList [('a',1),('l',2)] -> "all"
 toWord :: CharCounts -> Word
 toWord cc = concat (map (\(c, n) -> replicate n c) (toList cc))
 
@@ -33,14 +35,12 @@ wordAnagrams w m = handle (lookup (wordCharCounts w) m) where
 
 -- charCountsSubsets takes an CharCounts and returns all subsets of given CharCounts
 -- first of all I converted given CharCounts to a String because to ease operations
--- for example: fromList [('a',1),('l',2)] -> "all"
 -- after that wordSubsets converts a  string to all possible sub strings
 -- for example: "all" -> ["all","al","a","ll","l",""]
 -- last operations is converting these substrings to CharCounts
 charCountsSubsets :: CharCounts -> [CharCounts]
 charCountsSubsets cc = map wordCharCounts subWords where
-    word = concat (map (\(c, n) -> replicate n c) (toList cc))
-    subWords = wordSubsets word where
+    subWords = wordSubsets $ toWord cc where
         wordSubsets :: Word -> [Word]
         wordSubsets []  = [[]]
         wordSubsets (x:xs) = nub (map (x:) (wordSubsets xs) ++ wordSubsets xs)
@@ -57,17 +57,21 @@ sentenceAnagrams s dict = iter (sentenceCharCounts s) where
         0 -> [[]]
         otherwise -> [word: sentence | sub  <- (charCountsSubsets cc),
                                        word <- wordAnagrams (toWord sub) dict,
-                                       sentence <- iter (subtractCounts cc sub), not (null sub)]
+                                       sentence <- iter (subtractCounts cc sub)]
 
 main = do
+    -- get command line argument
     args <- getArgs
     let sentence = splitOn " " (args !! 0)
     
+    -- read file and convert to word list
     content <- readFile ("words.txt")
-    let linesOfFiles = lines content
-    let dict = dictWordsByCharCounts (dictCharCounts linesOfFiles)
+    let words = lines content
 
+    -- create dictionary
+    let dict = dictWordsByCharCounts $ dictCharCounts words
+
+    -- get anagrams
     let anagrams = sentenceAnagrams sentence dict
-
     putStrLn (show anagrams)
 
