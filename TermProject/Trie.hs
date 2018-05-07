@@ -42,5 +42,11 @@ getNode acc aacl t = foldr (\x y-> (getEdge acc [] x) ++ y) aacl (M.toList (chil
 getWords :: Trie -> [Word]
 getWords t = getNode "" [] t
 
+-- prefix takes a string (prefix) and a trie and it may returns a list of word that start with the given prefix
+-- it calls helper function getNode with given prefix and a sub-trie (after traversing or extracting prefix part) if it exist or empty trie
 prefix :: Word -> Trie -> Maybe [Word]
-prefix = undefined
+prefix w t = if null r then Nothing else Just r where
+        r = pre w t where
+            pre :: Word -> Trie -> [Word]
+            pre [] t'      = getNode (reverse w) [] t'
+            pre (w1:ws) t' = pre ws (fromMaybe empty $ children t' M.!? w1)
