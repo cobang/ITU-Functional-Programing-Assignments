@@ -12,8 +12,8 @@ empty :: Trie
 empty = Trie {end=False, children=M.empty}
 
 insert :: Word -> Trie -> Trie
-insert [] t        = Trie {end=True, children=children t}
-insert (w1':ws') t = Trie {end=end t, children=M.insert w1' (insert ws' $ fromMaybe empty $ children t M.!? w1') (children t)}
+insert [] t      = Trie {end=True, children=children t}
+insert (w1:ws) t = Trie {end=end t, children=M.insert w1 (insert ws $ fromMaybe empty $ children t M.!? w1) (children t)}
 
 insertList :: [Word] -> Trie
 insertList = foldr (\x trie -> insert x trie) empty
