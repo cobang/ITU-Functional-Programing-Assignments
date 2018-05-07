@@ -22,19 +22,25 @@ search :: Word -> Trie -> Bool
 search [] t      = end t
 search (w1:ws) t = search ws $ fromMaybe empty $ children t M.!? w1
 
+-- getNode is a helper function for getWords and prefix
+-- it takes two accumulators, they are word and word list
+-- accumulator word is an prefix, it will be added all found words. it can be empty("") or a real prefix("an")
+-- accumulator word list is a initial word list to add words in trie
+getNode :: Word -> [Word] -> Trie -> [Word]
+getNode acc aacl t = foldr (\x y-> (getEdge acc [] x) ++ y) aacl (M.toList (children t))
+    where
+        getEdge :: Word -> [Word] -> (Char, Trie) -> [Word]
+        getEdge acc' accl' (c',t') = case (end t', (children t')==M.empty) of
+            (_, True)       -> (reverse w): accl'
+            (True, False)   -> getNode w ((reverse w):accl') t'
+            (False, False)  -> getNode w accl' t'
+            where
+                w = c':acc'
+
+-- getWords takes a trie and returns all the words present in the trie
+-- it calls helper function getNode with empty("") prefix and root node of trie
 getWords :: Trie -> [Word]
 getWords t = getNode "" [] t
-    where
-        getNode :: Word -> [Word] -> Trie -> [Word]
-        getNode acc l t' = foldr (\x y-> (getEdge acc [] x) ++ y) l (M.toList (children t'))
-            where
-                getEdge :: Word -> [Word] -> (Char, Trie) -> [Word]
-                getEdge acc'' accl'' (c'',t'') = case (end t'', (children t'')==M.empty) of
-                    (_, True)       -> (reverse w): accl''
-                    (True, False)   -> getNode w ((reverse w):accl'') t''
-                    (False, False)  -> getNode w accl'' t''
-                    where
-                        w = c'':acc''
 
 prefix :: Word -> Trie -> Maybe [Word]
 prefix = undefined
