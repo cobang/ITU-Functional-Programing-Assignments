@@ -19,7 +19,8 @@ insertList :: [Word] -> Trie
 insertList = foldr (\x trie -> insert x trie) empty
 
 search :: Word -> Trie -> Bool
-search = undefined
+search [] t      = end t
+search (w1:ws) t = search ws $ fromMaybe empty $ children t M.!? w1
 
 getWords :: Trie -> [Word]
 getWords t = getNode "" [] t
