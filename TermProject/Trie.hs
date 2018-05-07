@@ -16,7 +16,7 @@ insert [] t        = Trie {end=True, children=children t}
 insert (w1':ws') t = Trie {end=end t, children=M.insert w1' (insert ws' $ fromMaybe empty $ children t M.!? w1') (children t)}
 
 insertList :: [Word] -> Trie
-insertList = undefined
+insertList = foldr (\x trie -> insert x trie) empty
 
 search :: Word -> Trie -> Bool
 search = undefined
