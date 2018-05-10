@@ -5,8 +5,9 @@ import System.Environment
 import System.IO
 import Prelude hiding (Word)
 
-data Trie = Trie {end :: Bool, children :: M.Map Char Trie} deriving (Eq, Show)
-type Word = String
+data Trie   = Trie {end :: Bool, children :: M.Map Char Trie} deriving (Eq, Show)
+data Action = Add | Search | Find | PrintAll | Exit deriving (Eq, Show)
+type Word   = String
 
 empty :: Trie
 empty = Trie {end=False, children=M.empty}
@@ -50,3 +51,15 @@ prefix w t = if null r then Nothing else Just r where
             pre :: Word -> Trie -> [Word]
             pre [] t'      = getNode (reverse w) [] t'
             pre (w1:ws) t' = pre ws (fromMaybe empty $ children t' M.!? w1)
+
+convertAction :: String -> Action
+convertAction = undefined
+
+getInput :: IO String
+getInput = undefined
+
+
+
+
+
+
