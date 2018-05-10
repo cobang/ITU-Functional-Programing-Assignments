@@ -101,8 +101,8 @@ doAction a w t = case a of
         return t
 
     Find     -> do
-        let fw = prefix w t
-        if fw == Nothing
+        let fw = fromMaybe [] $ prefix w t
+        if length fw == 0
             then putStrLn ("NO words found with that prefix!")
             else do
                 putStrLn ("Found words:")
