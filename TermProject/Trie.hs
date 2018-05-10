@@ -1,4 +1,4 @@
-module Trie where
+module Main where
 import qualified Data.Map as M
 import Data.Maybe (fromMaybe)
 import System.Environment
@@ -61,7 +61,28 @@ convertAction c
     | elem c "eE" = Exit
     | otherwise   = error "Unknown action"
 
+listActions :: IO ()
+listActions = do
+    putStrLn "a) Add Word"
+    putStrLn "s) Search Word"
+    putStrLn "f) Find word with prefix"
+    putStrLn "p) Print all words"
+    putStrLn "e) Exit"
+
 getInput :: IO String
 getInput = do
     line <- getLine
     return line
+
+getAction :: IO Action
+getAction = do
+    putStrLn "Enter the Action"
+    input <- getInput
+    if length input == 1 && elem (head input) "aAsSfFpPeE"
+        then return $ convertAction $ head input
+        else do 
+            putStrLn "Please enter a valid character (a,s,f,p,e)"
+            getAction
+main = do
+    listActions
+
