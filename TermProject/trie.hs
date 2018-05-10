@@ -3,7 +3,7 @@ import qualified Data.Map as M
 import Data.Maybe (fromMaybe)
 import System.Environment
 import System.IO
-import Prelude hiding (Word)
+import Prelude hiding (Word, show)
 
 data Trie   = Trie {end :: Bool, children :: M.Map Char Trie} deriving (Eq, Show)
 data Action = Add | Search | Find | PrintAll | Exit deriving (Eq, Show)
@@ -106,15 +106,21 @@ doAction a w t = case a of
             then putStrLn ("NO words found with that prefix!")
             else do
                 putStrLn ("Found words:")
-                putStrLn (show fw)
+                show $ fw
         return t
 
     PrintAll -> do
         putStrLn ("List of words in dictionary:")
-        putStrLn (show (getWords t))
+        show $ getWords t
         return t
 
     otherwise -> error "Inappropriate action"
+
+show :: [Word] -> IO ()
+show []      = do return ()
+show (w1:ws) = do
+    putStrLn w1
+    show ws
 
 routine :: Trie -> IO ()
 routine t = do
