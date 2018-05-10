@@ -55,7 +55,7 @@ prefix w t = if null r then Nothing else Just r where
 convertAction :: Char -> Action
 convertAction c
     | elem c "aA" = Add
-    | elem c "sS" = Search
+    | elem c "sS" = Searcha
     | elem c "fF" = Find
     | elem c "pP" = PrintAll
     | elem c "eE" = Exit
