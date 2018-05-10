@@ -85,7 +85,19 @@ getAction = do
             putStrLn "Please enter a valid character (a,s,f,p,e)"
             getAction
 
-main = do
-    listActions
-    
+routine :: Trie -> IO ()
+routine t = undefined
 
+main = do
+    -- get command line argument
+    args <- getArgs
+    let fileName = args !! 0
+
+    -- read file and convert to word list
+    content <- readFile (fileName)
+    let words = lines content
+
+    -- create trie
+    let trie = insertList words
+
+    routine trie
