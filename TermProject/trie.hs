@@ -85,8 +85,20 @@ getAction = do
             putStrLn "Please enter a valid character (a,s,f,p,e)"
             getAction
 
+doAction :: Action -> String -> Trie -> IO Trie
+doAction = undefined
+
 routine :: Trie -> IO ()
-routine t = undefined
+routine t = do
+    listActions
+    action <- getAction
+    if action == Exit
+        then
+            return ()
+        else do
+            input <- getInput
+            trie <- doAction action input t
+            routine trie
 
 main = do
     -- get command line argument
