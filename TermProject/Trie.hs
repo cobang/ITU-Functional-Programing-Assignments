@@ -56,10 +56,6 @@ convertAction :: String -> Action
 convertAction = undefined
 
 getInput :: IO String
-getInput = undefined
-
-
-
-
-
-
+getInput = do
+    line <- getLine
+    return line
