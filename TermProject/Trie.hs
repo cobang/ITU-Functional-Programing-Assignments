@@ -52,8 +52,14 @@ prefix w t = if null r then Nothing else Just r where
             pre [] t'      = getNode (reverse w) [] t'
             pre (w1:ws) t' = pre ws (fromMaybe empty $ children t' M.!? w1)
 
-convertAction :: String -> Action
-convertAction = undefined
+convertAction :: Char -> Action
+convertAction c
+    | elem c "aA" = Add
+    | elem c "sS" = Search
+    | elem c "fF" = Find
+    | elem c "pP" = PrintAll
+    | elem c "eE" = Exit
+    | otherwise   = error "Unknown action"
 
 getInput :: IO String
 getInput = do
