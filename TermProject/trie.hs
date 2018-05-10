@@ -71,18 +71,21 @@ listActions = do
 
 getInput :: IO String
 getInput = do
+    putStrLn "Enter word/prefix"
     line <- getLine
     return line
 
 getAction :: IO Action
 getAction = do
     putStrLn "Enter the Action"
-    input <- getInput
+    input <- getLine
     if length input == 1 && elem (head input) "aAsSfFpPeE"
         then return $ convertAction $ head input
         else do 
             putStrLn "Please enter a valid character (a,s,f,p,e)"
             getAction
+
 main = do
     listActions
+    
 
