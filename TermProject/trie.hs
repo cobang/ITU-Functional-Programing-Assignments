@@ -85,8 +85,36 @@ getAction = do
             putStrLn "Please enter a valid character (a,s,f,p,e)"
             getAction
 
-doAction :: Action -> String -> Trie -> IO Trie
-doAction = undefined
+doAction :: Action -> Word-> Trie -> IO Trie
+doAction a w t = case a of
+    Add      -> do
+        let newTrie = insert w t
+        putStrLn ("Word " ++ w ++ " added to the Trie")
+        return newTrie
+
+    Search   -> do
+        if search w t
+            then do
+                putStrLn "Exists in dictionary!"
+            else do
+                putStrLn "Not exists!"
+        return t
+
+    Find     -> do
+        let fw = prefix w t
+        if fw == Nothing
+            then putStrLn ("NO words found with that prefix!")
+            else do
+                putStrLn ("Found words:")
+                putStrLn (show fw)
+        return t
+
+    PrintAll -> do
+        putStrLn ("List of words in dictionary:")
+        putStrLn (show (getWords t))
+        return t
+
+    otherwise -> error "Inappropriate action"
 
 routine :: Trie -> IO ()
 routine t = do
@@ -96,9 +124,14 @@ routine t = do
         then
             return ()
         else do
-            input <- getInput
-            trie <- doAction action input t
-            routine trie
+            if action /= PrintAll
+                then do
+                    input <- getInput
+                    trie <- doAction action input t
+                    routine trie
+                else do
+                    trie <- doAction action "" t
+                    routine trie
 
 main = do
     -- get command line argument
