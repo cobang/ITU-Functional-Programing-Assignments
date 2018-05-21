@@ -1,3 +1,6 @@
+-- Goksel Coban
+-- 150140718
+
 module Main where
 import qualified Data.Map as M
 import Data.Maybe (fromMaybe)
