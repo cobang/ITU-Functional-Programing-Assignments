@@ -134,9 +134,11 @@ routine t = do
                 then do
                     input <- getInput
                     trie <- doAction action input t
+                    putStrLn ""
                     routine trie
                 else do
                     trie <- doAction action "" t
+                    putStrLn ""
                     routine trie
 
 main = do
