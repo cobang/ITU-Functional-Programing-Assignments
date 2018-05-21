@@ -41,7 +41,7 @@ getNode acc aacl t = foldr (\x y-> (getEdge acc [] x) ++ y) aacl (M.toList (chil
 -- getWords takes a trie and returns all the words present in the trie
 -- it calls helper function getNode with empty("") prefix and root node of trie
 getWords :: Trie -> [Word]
-getWords t = getNode "" [] t
+getWords = getNode "" []
 
 -- prefix takes a string (prefix) and a trie and it may returns a list of word that start with the given prefix
 -- it calls helper function getNode with given prefix and a sub-trie (after traversing or extracting prefix part) if it exist or empty trie
